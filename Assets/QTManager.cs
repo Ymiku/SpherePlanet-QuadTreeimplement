@@ -38,7 +38,7 @@ public class QTManager : UnitySingleton<QTManager> {
 			//Debug.Log ("LOD为"+i.ToString()+"的节点个数为"+activeNodeListArray[i].Count.ToString());
 			for (int m = 0; m < activeNodeListArray[i].Count; m++) {
 				temp = activeNodeListArray [i] [m];
-				Gizmos.DrawWireCube(new Vector3 (temp.center.x, 0f, temp.center.y), new Vector3 (temp.length, 1f,temp.length));
+				Gizmos.DrawWireCube(new Vector3 (temp.center.x, 0f, temp.center.z), new Vector3 (temp.length, 1f,temp.length));
 			}
 		}
 	}

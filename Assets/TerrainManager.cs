@@ -7,6 +7,8 @@ public class TerrainManager : MonoBehaviour {
 	private RootNode _rootNode;
 	// Use this for initialization
 	void Start () {
+		Debug.Log (MathExtra.fastSqrt(4f));
+		Debug.Log (MathExtra.fastSqrt(10000f));
 		Init ();
 
 	}

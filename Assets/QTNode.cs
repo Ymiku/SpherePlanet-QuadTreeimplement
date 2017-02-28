@@ -4,7 +4,7 @@ public class QTNode:IPoolable {
 	public int lodLevel = 0;
 	public QTNode parent;
 	public int quadrantID = 0;
-	public Vector2 center = Vector2.zero;
+	public Vector3 center = Vector3.zero;
 	public float length;
 	private QTNode[] _childArray;
 	public QTNode()
@@ -17,8 +17,8 @@ public class QTNode:IPoolable {
 		this.quadrantID = quadrantID;
 		this.length = parent.length * 0.5f;
 		float offSet = this.length*0.5f;
-		this.center = new Vector2 (parent.center.x + ((quadrantID == 0 || quadrantID == 3) ? offSet : -offSet), 
-			parent.center.y + ((quadrantID == 0 || quadrantID == 1) ? offSet : -offSet));
+		this.center = new Vector3 (parent.center.x + ((quadrantID == 0 || quadrantID == 3) ? offSet : -offSet),0f, 
+			parent.center.z + ((quadrantID == 0 || quadrantID == 1) ? offSet : -offSet));
 		CheckForLOD ();
 	}
 	public static QTNode GetQTNode()
@@ -29,7 +29,7 @@ public class QTNode:IPoolable {
 	}
 	public void CheckForLOD()
 	{
-		if (lodLevel > 0) {
+		if (lodLevel > 0&&MathExtra.GetV3L(QTManager.Instance.playerTrans.position-center)/length<1f) {
 			GenerateChild ();
 		} else {
 			QTManager.Instance.activeNodeListArray [lodLevel].Add (this);
