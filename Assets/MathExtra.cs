@@ -27,13 +27,13 @@ public static class MathExtra {
 	}
 	public static float GetV2L(Vector2 v)
 	{
-		return MathExtra.fastSqrt(Mathf.Pow(v.x,2f)+Mathf.Pow(v.y,2f));
+		return MathExtra.FastSqrt(Mathf.Pow(v.x,2f)+Mathf.Pow(v.y,2f));
 	}
 	public static float GetV3L(Vector3 v)
 	{
-		return MathExtra.fastSqrt(v.x*v.x+v.y*v.y+v.z*v.z);
+		return MathExtra.FastSqrt(v.x*v.x+v.y*v.y+v.z*v.z);
 	}
-	public static float fastSqrt(float x)
+	public static float FastSqrt(float x)
 	{
 		unsafe  
 		{  
@@ -94,4 +94,10 @@ public static class MathExtra {
 			return 360f + degree;
 		return degree;
 	} 
+	public static bool ApproEquals(float x,float y)
+	{
+		if (Mathf.Abs (x - y) <= 0.1f)
+			return true;
+		return false;
+	}
 }

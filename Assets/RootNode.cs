@@ -9,6 +9,7 @@ public class RootNode : QTNode {
 		this.quadrantID = 0;
 		this.length = length;
 		this.center = Vector2.zero;
+		borderStatus = BorderStatus.UpBorder | BorderStatus.RightBorder | BorderStatus.DownBorder | BorderStatus.LeftBorder;
 		CheckForLOD ();
 	}
 	public override void Destroy()
