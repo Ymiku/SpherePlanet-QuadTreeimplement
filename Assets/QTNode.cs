@@ -6,7 +6,9 @@ public class QTNode:IPoolable {
 	public QTNode parent;
 	public int quadrantID = 0;
 	public Vector3 center = Vector3.zero;
+	public Vector3 sphereCenter = Vector3.zero;
 	public float length;
+	public float sphereLength;
 	public bool isDisplay = false;
 	public LCQTMesh qtMesh;
 	public enum BorderStatus
@@ -31,8 +33,10 @@ public class QTNode:IPoolable {
 		this.quadrantID = quadrantID;
 		this.length = parent.length * 0.5f;
 		float offSet = this.length*0.5f;
-		this.center = new Vector3 (parent.center.x + ((quadrantID == 0 || quadrantID == 3) ? offSet : -offSet),0f, 
+		this.center = new Vector3 (parent.center.x + ((quadrantID == 0 || quadrantID == 3) ? offSet : -offSet),parent.center.y, 
 			parent.center.z + ((quadrantID == 0 || quadrantID == 1) ? offSet : -offSet));
+		this.sphereCenter = QTManager.Instance.activeTerrain.transform.TransformPoint(MathExtra.FastNormalize(center) * QTManager.Instance.activePlanet.sphereRadius);
+		this.sphereLength = this.length;
 		if(parent.borderStatus!=BorderStatus.NotBorder)
 		{
 			if(((parent.borderStatus&BorderStatus.UpBorder)==BorderStatus.UpBorder)&&(quadrantID==0||quadrantID==1))
@@ -222,7 +226,7 @@ public class QTNode:IPoolable {
 		//	return;
 		GetNeighbourStatusArray();
 		if ( (_neighbourStatus[0] != _LastNeighbourStatus[0])||(_neighbourStatus[1] != _LastNeighbourStatus[1])||(_neighbourStatus[2] != _LastNeighbourStatus[2])||(_neighbourStatus[3] != _LastNeighbourStatus[3])) {
-			qtMesh.CreatMesh (center, length, _neighbourStatus, QTManager.Instance.activeTerrain.splitCount);
+			qtMesh.CreatMesh (center, length, _neighbourStatus, QTManager.Instance.activePlanet.splitCount);
 			for (int i = 0; i < 4; i++) {
 				_LastNeighbourStatus [i] = _neighbourStatus [i];
 			}
@@ -263,7 +267,7 @@ public class QTNode:IPoolable {
 	}
 	private bool GetBorderStatus(int dir)
 	{
-		if (lodLevel == QTManager.Instance.activeTerrain.maxLodLevel)
+		if (lodLevel == QTManager.Instance.activePlanet.maxLodLevel)
 			return false;
 		if (dir == 0 && ((borderStatus & BorderStatus.UpBorder) == BorderStatus.UpBorder))
 			return false;

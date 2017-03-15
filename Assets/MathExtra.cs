@@ -33,6 +33,10 @@ public static class MathExtra {
 	{
 		return MathExtra.FastSqrt(v.x*v.x+v.y*v.y+v.z*v.z);
 	}
+	public static Vector3 FastNormalize(Vector3 v)
+	{
+		return v*InverseSqrtFast (v.sqrMagnitude);
+	}
 	public static float FastSqrt(float x)
 	{
 		unsafe  
@@ -53,7 +57,6 @@ public static class MathExtra {
 	}
 	public static float InverseSqrtFast(float x)  
 	{  
-		//return OpenGLTK.MathInverseSqrtFast.InverseSqrtFast(x);  
 		unsafe  
 		{  
 			float xhalf = 0.5f * x;  

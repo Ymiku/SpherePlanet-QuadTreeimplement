@@ -1,57 +1,53 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-public class TerrainManager : MonoBehaviour {
-	public float sphereRange = 10f;
-	public int maxLodLevel = 4;
-	public float cl = 1f;
-	public int splitCount = 4;
-	public Material mat;
+public class QTTerrain : MonoBehaviour {
+
 	public List<QTNode>[] activeNodeListArray;
 	public List<QTNode>[] allNodeListArray;
 	public List<QTNode> updateList = new List<QTNode> ();
-	public bool showGizmos = true;
+	public bool showGizmos = false;
 	public int[,] vectorToPosTable;
 	private RootNode _rootNode;
-	private QTNode tempNode;
+	private QTNode _tempNode;
+	private QTPlanet _planet;
 	// Use this for initialization
-	void Start () {
-
-	}
 	public void Init()
 	{
-		if (splitCount < 1)
-			splitCount = 1;
-		if (splitCount % 2 != 0&&splitCount!=1)
-			splitCount--;
-		vectorToPosTable = new int[splitCount+1,splitCount+1];
-		for (int x = 0; x <= splitCount; x++) {
-			for (int z = 0; z <= splitCount; z++) {
-				vectorToPosTable[x,z] = x + z * (splitCount + 1);
+		_planet = QTManager.Instance.activePlanet;
+		vectorToPosTable = new int[_planet.splitCount+1,_planet.splitCount+1];
+		for (int x = 0; x <= _planet.splitCount; x++) {
+			for (int z = 0; z <= _planet.splitCount; z++) {
+				vectorToPosTable[x,z] = x + z * (_planet.splitCount + 1);
 			}
 		}
-		activeNodeListArray = new List<QTNode>[maxLodLevel+1];
-		allNodeListArray = new List<QTNode>[maxLodLevel+1];
-		for (int i = 0; i <= maxLodLevel; i++) {
+		activeNodeListArray = new List<QTNode>[_planet.maxLodLevel+1];
+		allNodeListArray = new List<QTNode>[_planet.maxLodLevel+1];
+		for (int i = 0; i <= _planet.maxLodLevel; i++) {
 			activeNodeListArray [i] = new List<QTNode> ();
 			allNodeListArray [i] = new List<QTNode> ();
 		}
-		_rootNode = new RootNode (sphereRange);
+		_rootNode = new RootNode (_planet.sphereRange);
 		TryGenerateBorder ();
 		CalculateMesh ();
 	}
+	public void Clear()
+	{
+		_rootNode.Destroy ();
+	}
+
 	// Update is called once per frame
 	public void Execute()
 	{
-		tempNode = null;
+		_tempNode = null;
 		for (int i = 0; i < activeNodeListArray.Length; i++) {
 			for (int m = 0; m < activeNodeListArray[i].Count; m++) {
-				tempNode = activeNodeListArray [i] [m];
-				if (tempNode.lodLevel > 0&&QTManager.Instance.CanGenerate (tempNode)) {
-					tempNode.Generate ();
+				_tempNode = activeNodeListArray [i] [m];
+				if (_tempNode.lodLevel > 0&&QTManager.Instance.CanGenerate (_tempNode)) {
+					_tempNode.Generate ();
 				} else {
-					if (tempNode.lodLevel < maxLodLevel && QTManager.Instance.NeedBack (tempNode.parent)) {
-						tempNode.parent.Back ();
+					if (_tempNode.lodLevel < _planet.maxLodLevel && QTManager.Instance.NeedBack (_tempNode.parent)) {
+						_tempNode.parent.Back ();
 					}
 				}
 			}
@@ -75,16 +71,18 @@ public class TerrainManager : MonoBehaviour {
 	}
 	public void CalculateMesh()
 	{
-		tempNode = null;
+		_tempNode = null;
 		for (int i = 0; i < updateList.Count; i++) {
-			tempNode = updateList [i];
-			tempNode.qtMesh = LCQTMesh.CreatObject ();
-			tempNode.qtMesh.transform.parent = transform;
-			tempNode.qtMesh.transform.position = transform.position;
-			tempNode.qtMesh.meshRenderer.material = mat;
-			tempNode.qtMesh.CreatMesh (tempNode.center,tempNode.length,tempNode.GetNeighbourStatusArray (),splitCount);
+			_tempNode = updateList [i];
+			_tempNode.qtMesh = LCQTMesh.CreatObject ();
+			_tempNode.qtMesh.transform.parent = transform;
+			_tempNode.qtMesh.transform.localPosition = Vector3.zero;
+			_tempNode.qtMesh.transform.localRotation = Quaternion.Euler (new Vector3(0f,0f,0f));
+			_tempNode.qtMesh.meshRenderer.material = _planet.mat;
+
+			_tempNode.qtMesh.CreatMesh (_tempNode.center,_tempNode.length,_tempNode.GetNeighbourStatusArray (),_planet.splitCount);
 			//node.qtMesh.CreatMesh (node.center,node.length,new bool[]{false,false,false,false},splitCount);
-			tempNode.qtMesh.gameObject.SetActive (true);
+			_tempNode.qtMesh.gameObject.SetActive (true);
 		}
 		updateList.Clear ();
 	}
@@ -100,13 +98,13 @@ public class TerrainManager : MonoBehaviour {
 	{
 		if (activeNodeListArray == null||!showGizmos)
 			return;
-		tempNode = null;
+		_tempNode = null;
 		for (int i = 0; i < activeNodeListArray.Length; i++) {
 			//Debug.Log ("LOD为"+i.ToString()+"的节点个数为"+activeNodeListArray[i].Count.ToString());
 			for (int m = 0; m < activeNodeListArray[i].Count; m++) {
-				tempNode = activeNodeListArray [i] [m];
-				if(tempNode.isDisplay)
-					Gizmos.DrawWireCube(transform.TransformPoint(new Vector3 (tempNode.center.x, 0f, tempNode.center.z)), new Vector3 (tempNode.length, 1f,tempNode.length));
+				_tempNode = activeNodeListArray [i] [m];
+				if(_tempNode.isDisplay)
+					Gizmos.DrawWireCube(transform.TransformPoint(new Vector3 (_tempNode.center.x, 0f, _tempNode.center.z)), new Vector3 (_tempNode.length, 1f,_tempNode.length));
 			}
 		}
 	}

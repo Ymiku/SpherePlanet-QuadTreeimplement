@@ -35,7 +35,7 @@ public class LCQTMesh : LCGameObject {
 	}
 	public float GetY(float x)
 	{
-		return Mathf.Sin(x/100f)*100f;
+		return 0f;
 	}
 	public void CreatMesh(Vector3 center,float length,bool[] transformArray,int splitCount)
 	{
@@ -43,7 +43,7 @@ public class LCQTMesh : LCGameObject {
 		mesh.Clear ();
 
 		float offSet = length / splitCount;
-		Vector3 oriPos = new Vector3 (center.x - length * 0.5f,GetY(center.x - length * 0.5f), center.z - length * 0.5f);
+		Vector3 oriPos = new Vector3 (center.x - length * 0.5f,center.y, center.z - length * 0.5f);
 		int lineCount = 0;
 
 		if(verts==null||verts.Length!=(splitCount+1)*(splitCount+1))
@@ -54,14 +54,19 @@ public class LCQTMesh : LCGameObject {
 
 		for (int i = 1; i < max; i++) {
 			if (lineCount < splitCount) {
-				verts [i] = new Vector3 (verts [i - 1].x + offSet, GetY(verts [i - 1].x + offSet), verts [i - 1].z);
+				verts [i] = new Vector3 (verts [i - 1].x + offSet,center.y, verts [i - 1].z);
+
 				lineCount++;
 			} else {
-				verts [i] = new Vector3 (verts[i-splitCount-1].x,GetY(verts[i-splitCount-1].x), verts [i-splitCount-1].z+offSet);
+				verts [i] = new Vector3 (verts[i-splitCount-1].x,center.y, verts [i-splitCount-1].z+offSet);
 				lineCount = 0;
 			}
 		}
+		float radius = QTManager.Instance.activePlanet.sphereRadius;
+		for (int i = 0; i < max; i++) {
+			verts [i] = MathExtra.FastNormalize(verts [i]) * radius;
 
+		}
 
 
 		if (splitCount == 1) {
