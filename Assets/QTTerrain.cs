@@ -44,34 +44,23 @@ public class QTTerrain : MonoBehaviour {
 	public void Execute()
 	{
 		_tempNode = null;
-		QTManager.Instance.needChange = true;
 		for (int i = 0; i < activeNodeListArray.Length; i++) {
-			if (QTManager.Instance.needChange) {
-				QTManager.Instance.needChange = false;
-			} else {
-				QTManager.Instance.changedLOD = i;
-				return;
-			}
-			if(activeNodeListArray[i].Count==0)
-				QTManager.Instance.needChange = true;
 			for (int m = 0; m < activeNodeListArray[i].Count; m++) {
 				_tempNode = activeNodeListArray [i] [m];
 				if (_tempNode.lodLevel > 0&&QTManager.Instance.CanGenerate (_tempNode)) {
-					QTManager.Instance.needChange = true;
 					_tempNode.Generate ();
 				} else {
 					if (_tempNode.lodLevel < _planet.maxLodLevel && QTManager.Instance.NeedBack (_tempNode.parent)) {
-						QTManager.Instance.needChange = true;
 						_tempNode.parent.Back ();
 					}
 				}
 			}
+
 		}
-		QTManager.Instance.changedLOD = QTManager.Instance.activePlanet.maxLodLevel;
 	}
 	public void UpdateMesh()
 	{
-		for (int i = 0; i < QTManager.Instance.changedLOD; i++) {
+		for (int i = 0; i < activeNodeListArray.Length; i++) {
 			for (int m = 0; m < activeNodeListArray[i].Count; m++) {
 				activeNodeListArray [i] [m].UpdateMesh();
 			}
@@ -79,18 +68,11 @@ public class QTTerrain : MonoBehaviour {
 	}
 	public void TryGenerateBorder()
 	{
-		QTManager.Instance.needChange = true;
 		for (int i = 0; i < activeNodeListArray.Length; i++) {
-			if (i > QTManager.Instance.changedLOD && !QTManager.Instance.needChange) {
-				QTManager.Instance.changedLOD = Mathf.Max(i,QTManager.Instance.changedLOD);
-				return;
-			}
-			QTManager.Instance.needChange = false;
 			for (int m = 0; m < activeNodeListArray[i].Count; m++) {
 				activeNodeListArray [i] [m].TryGenerateBorder();
 			}
 		}
-		QTManager.Instance.changedLOD = QTManager.Instance.activePlanet.maxLodLevel;
 	}
 	public void CalculateMesh()
 	{

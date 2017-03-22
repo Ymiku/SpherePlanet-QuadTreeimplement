@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 public class QTManager : UnitySingleton<QTManager> {
 	public Transform playerTrans;
+	[HideInInspector]
 	public QTPlanet activePlanet;
+	[HideInInspector]
 	public QTTerrain activeTerrain;
 	public float backBuffer = 0.1f;
-	public bool needChange = true;
-	public int changedLOD;
 	List<QTNode> nodeList;
 	QTNode tNode;
 	// Use this for initialization

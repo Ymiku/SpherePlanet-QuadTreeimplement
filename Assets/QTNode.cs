@@ -36,7 +36,7 @@ public class QTNode:IPoolable {
 		this.center = new Vector3 (parent.center.x + ((quadrantID == 0 || quadrantID == 3) ? offSet : -offSet),parent.center.y, 
 			parent.center.z + ((quadrantID == 0 || quadrantID == 1) ? offSet : -offSet));
 		this.sphereCenter = QTManager.Instance.activeTerrain.transform.TransformPoint(MathExtra.FastNormalize(center) * QTManager.Instance.activePlanet.sphereRadius);
-		this.sphereLength = this.length;
+		this.sphereLength = QTManager.Instance.activePlanet.lengthArray[this.lodLevel];
 		if(parent.borderStatus!=BorderStatus.NotBorder)
 		{
 			if(((parent.borderStatus&BorderStatus.UpBorder)==BorderStatus.UpBorder)&&(quadrantID==0||quadrantID==1))
@@ -200,7 +200,6 @@ public class QTNode:IPoolable {
 		QTNode border = FindNearest (QTManager.Instance.activeTerrain.GetRoot(),pos);
 		if (border.lodLevel > this.lodLevel+1) {
 			border.Generate ();
-			QTManager.Instance.needChange = true;
 		}
 	}
 

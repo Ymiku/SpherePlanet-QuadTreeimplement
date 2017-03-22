@@ -18,13 +18,16 @@ public class QTPlanet : MonoBehaviour {
 	static int Front = 4;
 	static int Back = 5;
 	[HideInInspector]
-	public float sphereRange = 10f;
+	public float sphereRange = 20f;
 	public float sphereRadius = 10f;
 	public int maxLodLevel = 4;
 	public float cl = 1f;
 	public int splitCount = 4;
 	public Material mat;
+	[HideInInspector]
 	public List<QTTerrain> quadList;
+	[HideInInspector]
+	public float[] lengthArray;
 	// Use this for initialization
 	void Awake()
 	{
@@ -33,6 +36,11 @@ public class QTPlanet : MonoBehaviour {
 	public void Enter()
 	{
 		sphereRange = sphereRadius * 2f;
+		lengthArray = new float[maxLodLevel+1];
+		lengthArray [maxLodLevel] = Mathf.PI * sphereRange*0.25f;
+		for (int i = maxLodLevel-1; i >=0; i--) {
+			lengthArray [i] = lengthArray [i+1]*0.5f;
+		}
 		if (splitCount < 1)
 			splitCount = 1;
 		if (splitCount % 2 != 0&&splitCount!=1)
