@@ -112,7 +112,7 @@ public class QTNode:IPoolable {
 		QTManager.Instance.activeTerrain.AddToUpdateList (this);
 		QTManager.Instance.activeTerrain.activeNodeListArray [lodLevel].Add (this);
 	}
-	public void Hide()
+	private void Hide()
 	{
 		if (qtMesh == null) {
 			QTManager.Instance.activeTerrain.RemoveFromUpdateList (this);
@@ -137,87 +137,72 @@ public class QTNode:IPoolable {
 			nodePool.Push (this);
 		}
 	}
-
-
-
+		
 	//Try GenerateBorder
 	public void TryGenerateBorder()
 	{
 		QTNode border;
 		switch (quadrantID) {
 		case 0:
+			if((borderStatus&BorderStatus.UpBorder)!=BorderStatus.UpBorder)
 			TryGenerate (0);
+			if((borderStatus&BorderStatus.RightBorder)!=BorderStatus.RightBorder)
 			TryGenerate (1);
 			break;
 		case 1:
+			if((borderStatus&BorderStatus.UpBorder)!=BorderStatus.UpBorder)
 			TryGenerate (0);
+			if((borderStatus&BorderStatus.LeftBorder)!=BorderStatus.LeftBorder)
 			TryGenerate (3);
 			break;
 		case 2:
+			if((borderStatus&BorderStatus.DownBorder)!=BorderStatus.DownBorder)
 			TryGenerate (2);
+			if((borderStatus&BorderStatus.LeftBorder)!=BorderStatus.LeftBorder)
 			TryGenerate (3);
 			break;
 		case 3:
+			if((borderStatus&BorderStatus.RightBorder)!=BorderStatus.RightBorder)
 			TryGenerate (1);
+			if((borderStatus&BorderStatus.DownBorder)!=BorderStatus.DownBorder)
 			TryGenerate (2);
 			break;
 		}
 	}
 	private void TryGenerate(int dir)
 	{
+		if (lodLevel == QTManager.Instance.activePlanet.maxLodLevel)
+			return;
+		if (dir == 0 && ((borderStatus & BorderStatus.UpBorder) == BorderStatus.UpBorder))
+			return;
+		if (dir == 1 && ((borderStatus & BorderStatus.RightBorder) == BorderStatus.RightBorder))
+			return;
+		if (dir == 2 && ((borderStatus & BorderStatus.DownBorder) == BorderStatus.DownBorder))
+			return;
+		if (dir == 3 && ((borderStatus & BorderStatus.LeftBorder) == BorderStatus.LeftBorder))
+			return;
+		Vector3 pos = center;
+		float halfLength = length * 0.5f;
 		switch (dir) {
 		case 0:
-			if ((borderStatus & BorderStatus.UpBorder) == BorderStatus.UpBorder)
-				return;
+			pos = pos + new Vector3 (0f,0f,halfLength+0.1f);
 			break;
 		case 1:
-			if ((borderStatus & BorderStatus.RightBorder) == BorderStatus.RightBorder)
-				return;
+			pos = pos + new Vector3 (halfLength+0.1f,0f,0f);
 			break;
 		case 2:
-			if ((borderStatus & BorderStatus.DownBorder) == BorderStatus.DownBorder)
-				return;
+			pos = pos - new Vector3 (0f,0f,halfLength+0.1f);
 			break;
 		case 3:
-			if ((borderStatus & BorderStatus.LeftBorder) == BorderStatus.LeftBorder)
-				return;
+			pos = pos - new Vector3 (halfLength+0.1f,0f,0f);
 			break;
 		}
-
-		QTNode border = GetSameLevelBorder (dir);
-		if (border == null) {
-			border = QTManager.Instance.FindBorder (this, dir);
-			if(border!=null)
+		QTNode border = FindNearest (QTManager.Instance.activeTerrain.GetRoot(),pos);
+		if (border.lodLevel > this.lodLevel+1) {
 			border.Generate ();
+			QTManager.Instance.needChange = true;
 		}
-
 	}
-	private QTNode GetSameLevelBorder (int dir)
-	{
-		List<QTNode> nodeList = QTManager.Instance.activeTerrain.allNodeListArray[lodLevel];
-		Vector3 target = Vector3.zero;
-		switch (dir) {
-		case 0:
-			target = center + new Vector3 (0f,0f,length);
-			break;
-		case 1:
-			target = center + new Vector3 (length,0f,0f);
-			break;
-		case 2:
-			target = center + new Vector3 (0f,0f,-length);
-			break;
-		case 3:
-			target = center + new Vector3 (-length,0f,0f);
-			break;
-		}
-		for (int i = 0; i < nodeList.Count; i++) {
-			if (MathExtra.ApproEquals (nodeList [i].center.x, target.x) && MathExtra.ApproEquals (nodeList [i].center.z, target.z))
-				return nodeList [i];
-		}
-		return null;
-	}
-
-
 
 	//used for mesh calculate
 	public void UpdateMesh()
@@ -277,49 +262,49 @@ public class QTNode:IPoolable {
 			return false;
 		if (dir == 3 && ((borderStatus & BorderStatus.LeftBorder) == BorderStatus.LeftBorder))
 			return false;
+		Vector3 pos = center;
 		float halfLength = length * 0.5f;
-		float targetA = (dir==0||dir==2)?(center.x-halfLength):(center.z-halfLength);
-		float targetB = (dir==0||dir==2)?(center.x+halfLength):(center.z+halfLength);
-		List<QTNode> checkList = QTManager.Instance.activeTerrain.activeNodeListArray [lodLevel+1];
 		switch (dir) {
 		case 0:
-			for (int i = 0; i < checkList.Count; i++) {
-				if (MathExtra.ApproEquals (checkList [i].center.x, targetA) || MathExtra.ApproEquals (checkList [i].center.x, targetB)) {
-					if (MathExtra.ApproEquals (checkList [i].center.z - length, center.z + halfLength)) {
-						return true;
-					}
-				}
-			}
+			pos = pos + new Vector3 (0f,0f,halfLength+0.1f);
 			break;
 		case 1:
-			for (int i = 0; i < checkList.Count; i++) {
-				if (MathExtra.ApproEquals (checkList [i].center.z, targetA) || MathExtra.ApproEquals (checkList [i].center.z, targetB)) {
-					if (MathExtra.ApproEquals (checkList [i].center.x - length, center.x + halfLength)) {
-						return true;
-					}
-				}
-			}
+			pos = pos + new Vector3 (halfLength+0.1f,0f,0f);
 			break;
 		case 2:
-			for (int i = 0; i < checkList.Count; i++) {
-				if (MathExtra.ApproEquals (checkList [i].center.x, targetA) || MathExtra.ApproEquals (checkList [i].center.x, targetB)) {
-					if (MathExtra.ApproEquals (checkList [i].center.z + length, center.z - halfLength)) {
-						return true;
-					}
-				}
-			}
+			pos = pos - new Vector3 (0f,0f,halfLength+0.1f);
 			break;
 		case 3:
-			for (int i = 0; i < checkList.Count; i++) {
-				if (MathExtra.ApproEquals (checkList [i].center.z, targetA) || MathExtra.ApproEquals (checkList [i].center.z, targetB)) {
-					if (MathExtra.ApproEquals (checkList [i].center.x + length, center.x - halfLength)) {
-						return true;
-					}
-				}
-			}
+			pos = pos - new Vector3 (halfLength+0.1f,0f,0f);
 			break;
 		}
+		return FindNearest (QTManager.Instance.activeTerrain.GetRoot(),pos).lodLevel>this.lodLevel;
 
-		return false;
+	}
+	private QTNode FindNearest(QTNode root,Vector3 pos)
+	{
+		QTNode node = root.GetChild (0);
+		if (node == null||root.lodLevel==this.lodLevel)
+			return root;
+		float dis;
+		float disTemp;
+		dis = MathExtra.FastDis (node.center, pos);
+
+		disTemp = MathExtra.FastDis (root.GetChild (1).center, pos);
+		if (disTemp < dis) {
+			dis = disTemp;
+			node = root.GetChild (1);
+		}
+		disTemp = MathExtra.FastDis (root.GetChild (2).center, pos);
+		if (disTemp < dis) {
+			dis = disTemp;
+			node = root.GetChild (2);
+		}
+		disTemp = MathExtra.FastDis (root.GetChild (3).center, pos);
+		if (disTemp < dis) {
+			dis = disTemp;
+			node = root.GetChild (3);
+		}
+		return FindNearest(node,pos);
 	}
 }

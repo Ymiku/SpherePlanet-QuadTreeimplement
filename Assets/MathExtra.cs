@@ -103,4 +103,8 @@ public static class MathExtra {
 			return true;
 		return false;
 	}
+	public static float FastDis(Vector3 a,Vector3 b)
+	{
+		return Mathf.Abs (a.x - b.x) + Mathf.Abs (a.y - b.y) + Mathf.Abs (a.z - b.z);
+	}
 }
