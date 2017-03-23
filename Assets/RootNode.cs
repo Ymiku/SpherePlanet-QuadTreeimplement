@@ -10,7 +10,7 @@ public class RootNode : QTNode {
 		this.length = length;
 		this.center = Vector3.up*length*0.5f;
 		this.sphereCenter = QTManager.Instance.activeTerrain.transform.TransformPoint(MathExtra.FastNormalize(center) * QTManager.Instance.activePlanet.sphereRadius);
-		this.sphereLength = length;
+		this.sphereLength = QTManager.Instance.activePlanet.lengthArray[this.lodLevel];
 		borderStatus = BorderStatus.UpBorder | BorderStatus.RightBorder | BorderStatus.DownBorder | BorderStatus.LeftBorder;
 		CheckForLOD ();
 	}

@@ -53,8 +53,6 @@ public class QTPlanet : MonoBehaviour {
 			go.transform.parent = this.transform;
 			go.transform.localPosition = Vector3.zero;
 			t = go.AddComponent<QTTerrain> ();
-			QTManager.Instance.activeTerrain = t;
-			t.Init ();
 			quadList.Add (t);
 		}
 		quadList [Up].transform.rotation = Quaternion.Euler (new Vector3 (0f,0f,0f));
@@ -63,7 +61,11 @@ public class QTPlanet : MonoBehaviour {
 		quadList [Right].transform.rotation = Quaternion.Euler (new Vector3 (0f,0f,-90f));
 		quadList [Front].transform.rotation = Quaternion.Euler (new Vector3 (-90f,0f,0f));
 		quadList [Back].transform.rotation = Quaternion.Euler (new Vector3 (90f,0f,0f));
-
+		for (int i = 0; i < 6; i++) {
+			t = quadList [i];
+			QTManager.Instance.activeTerrain = t;
+			t.Init ();
+		}
 	}
 	public void Clear()
 	{

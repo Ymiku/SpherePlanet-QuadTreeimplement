@@ -65,7 +65,6 @@ public class LCQTMesh : LCGameObject {
 		float radius = QTManager.Instance.activePlanet.sphereRadius;
 		for (int i = 0; i < max; i++) {
 			verts [i] = MathExtra.FastNormalize(verts [i]) * radius;
-
 		}
 
 

@@ -8,6 +8,7 @@ public class QTManager : UnitySingleton<QTManager> {
 	public QTPlanet activePlanet;
 	[HideInInspector]
 	public QTTerrain activeTerrain;
+	public float disPower = 0.1f;
 	public float backBuffer = 0.1f;
 	List<QTNode> nodeList;
 	QTNode tNode;
@@ -46,13 +47,16 @@ public class QTManager : UnitySingleton<QTManager> {
 		}
 
 	}
+	public float GetDisPower()
+	{
+		return Mathf.Max (0.2f,disPower);
+	}
 	public bool CanGenerate(QTNode node)
 	{
-		return MathExtra.GetV3L (QTManager.Instance.playerTrans.position - node.sphereCenter) / node.sphereLength < QTManager.Instance.activePlanet.cl;
+		return MathExtra.GetV3L (QTManager.Instance.playerTrans.position - node.sphereCenter)*GetDisPower() / node.sphereLength < QTManager.Instance.activePlanet.cl;
 	}
 	public bool NeedBack(QTNode node)
 	{
-		return MathExtra.GetV3L (QTManager.Instance.playerTrans.position - node.sphereCenter) / node.sphereLength >= (QTManager.Instance.activePlanet.cl+backBuffer);
+		return MathExtra.GetV3L (QTManager.Instance.playerTrans.position - node.sphereCenter)*GetDisPower() / node.sphereLength >= (QTManager.Instance.activePlanet.cl+backBuffer);
 	}
-
 }
