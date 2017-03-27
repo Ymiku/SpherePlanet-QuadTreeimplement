@@ -12,6 +12,7 @@ namespace QTPlanetUtility{
 		private RootNode _rootNode;
 		private QTNode _tempNode;
 		private QTPlanet _planet;
+		public Texture2D grayTex;
 		// Use this for initialization
 		public void Init()
 		{

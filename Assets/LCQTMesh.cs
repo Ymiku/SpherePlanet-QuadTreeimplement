@@ -39,6 +39,7 @@ public class LCQTMesh : LCGameObject {
 	}
 	public void CreatMesh(Vector3 center,float length,bool[] transformArray,int splitCount)
 	{
+		Color[] heightMap =  QTManager.Instance.activePlanet.heightMap;
 		_vectorToPosTable = QTManager.Instance.activeTerrain.vectorToPosTable;
 		mesh.Clear ();
 
@@ -63,8 +64,13 @@ public class LCQTMesh : LCGameObject {
 			}
 		}
 		float radius = QTManager.Instance.activePlanet.sphereRadius;
+		float rootLength = QTManager.Instance.activeTerrain.GetRoot ().length;
+		Vector3 rootPos = QTManager.Instance.activeTerrain.GetRoot ().center - new Vector3 (rootLength*0.5f,0f,rootLength*0.5f);
+		float piece = rootLength / (QTManager.Instance.activePlanet._width - 1);
 		for (int i = 0; i < max; i++) {
-			verts [i] = MathExtra.FastNormalize(verts [i]) * radius;
+			verts [i] = MathExtra.FastNormalize (verts [i]) * radius*(1f+heightMap[GetMapPos(
+				(int)((verts [i].x-rootPos.x)/piece),(int)((verts [i].z-rootPos.z)/piece)
+			)].r*0.2f);
 		}
 
 
@@ -460,6 +466,11 @@ public class LCQTMesh : LCGameObject {
 	{
 		return _vectorToPosTable [x,z];
 		//return x + z * (rowCount + 1);
+	}
+	public int GetMapPos(int x,int z)
+	{
+		//return _vectorToPosTable [x,z];
+		return x + z * (QTManager.Instance.activePlanet._width);
 	}
 	public override void Destroy ()
 	{

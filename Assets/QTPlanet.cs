@@ -29,6 +29,10 @@ namespace QTPlanetUtility{
 		public List<QTTerrain> quadList;
 		[HideInInspector]
 		public float[] lengthArray;
+		public PlaneMap map;
+		public int _width;
+		public Texture2D heightTex;
+		public Color[] heightMap;
 		// Use this for initialization
 		void Awake()
 		{
@@ -36,6 +40,12 @@ namespace QTPlanetUtility{
 		}
 		public void Enter()
 		{
+			_width = splitCount * (1<<maxLodLevel)+1;
+			map.mapHeight = _width;
+			map.mapWidth = _width;
+			map.GenerateMap ();
+			heightTex = map.GetGrayTex ();
+			heightMap = heightTex.GetPixels ();
 			sphereRange = sphereRadius * 2f;
 			lengthArray = new float[maxLodLevel+1];
 			lengthArray [maxLodLevel] = Mathf.PI * sphereRange*0.25f;
