@@ -8,7 +8,6 @@ namespace QTPlanetUtility{
 		public List<QTNode>[] allNodeListArray;
 		public List<QTNode> updateList = new List<QTNode> ();
 		public bool showGizmos = false;
-		public int[,] vectorToPosTable;
 		private RootNode _rootNode;
 		private QTNode _tempNode;
 		private QTPlanet _planet;
@@ -17,12 +16,7 @@ namespace QTPlanetUtility{
 		public void Init()
 		{
 			_planet = QTManager.Instance.activePlanet;
-			vectorToPosTable = new int[_planet.splitCount+1,_planet.splitCount+1];
-			for (int x = 0; x <= _planet.splitCount; x++) {
-				for (int z = 0; z <= _planet.splitCount; z++) {
-					vectorToPosTable[x,z] = x + z * (_planet.splitCount + 1);
-				}
-			}
+
 			activeNodeListArray = new List<QTNode>[_planet.maxLodLevel+1];
 			allNodeListArray = new List<QTNode>[_planet.maxLodLevel+1];
 			for (int i = 0; i <= _planet.maxLodLevel; i++) {
@@ -33,7 +27,7 @@ namespace QTPlanetUtility{
 			TryGenerateBorder ();
 			CalculateMesh ();
 		}
-		public QTNode GetRoot()
+		public RootNode GetRoot()
 		{
 			return _rootNode;
 		}

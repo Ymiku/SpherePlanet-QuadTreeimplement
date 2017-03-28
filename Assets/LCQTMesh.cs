@@ -8,7 +8,9 @@ public class LCQTMesh : LCGameObject {
 	public MeshCollider meshCollider;
 	Vector3[] verts;
 	int[] tris;
+	Vector3[] vertsLowPoly;
 	private int[,] _vectorToPosTable;
+	private int[,] _vectorToHeightMapTable;
 	public static LCQTMesh CreatObject()
 	{
 		
@@ -37,10 +39,26 @@ public class LCQTMesh : LCGameObject {
 	{
 		return 0f;
 	}
+	public int GetVertsPos(int x,int z)
+	{
+		return _vectorToPosTable [x,z];
+		//return x + z * (rowCount + 1);
+	}
+	public int GetMapPos(int x,int z)
+	{
+		return _vectorToHeightMapTable [x,z];
+		//return x + z * (QTManager.Instance.activePlanet._width);
+	}
+	public override void Destroy ()
+	{
+		base.Destroy ();
+		mesh.Clear ();
+	}
 	public void CreatMesh(Vector3 center,float length,bool[] transformArray,int splitCount)
 	{
 		Color[] heightMap =  QTManager.Instance.activePlanet.heightMap;
-		_vectorToPosTable = QTManager.Instance.activeTerrain.vectorToPosTable;
+		_vectorToPosTable = QTManager.Instance.activePlanet.vectorToPosTable;
+		_vectorToHeightMapTable = QTManager.Instance.activePlanet.vectorToHeightMapTable;
 		mesh.Clear ();
 
 		float offSet = length / splitCount;
@@ -64,12 +82,11 @@ public class LCQTMesh : LCGameObject {
 			}
 		}
 		float radius = QTManager.Instance.activePlanet.sphereRadius;
-		float rootLength = QTManager.Instance.activeTerrain.GetRoot ().length;
-		Vector3 rootPos = QTManager.Instance.activeTerrain.GetRoot ().center - new Vector3 (rootLength*0.5f,0f,rootLength*0.5f);
-		float piece = rootLength / (QTManager.Instance.activePlanet._width - 1);
+		Vector3 rootPos = QTManager.Instance.activeTerrain.GetRoot ().rootOriPos;
+		float interval = QTManager.Instance.activeTerrain.GetRoot ().interval;
 		for (int i = 0; i < max; i++) {
 			verts [i] = MathExtra.FastNormalize (verts [i]) * radius*(1f+heightMap[GetMapPos(
-				(int)((verts [i].x-rootPos.x)/piece),(int)((verts [i].z-rootPos.z)/piece)
+				(int)((verts [i].x-rootPos.x)/interval),(int)((verts [i].z-rootPos.z)/interval)
 			)].r*0.2f);
 		}
 
@@ -88,6 +105,7 @@ public class LCQTMesh : LCGameObject {
 		}
 		if (tris == null || tris.Length != splitCount * splitCount * 6) {
 			tris = new int[splitCount * splitCount * 6];
+			vertsLowPoly = new Vector3[tris.Length];
 		} else {
 			max = reduceCount * 3;
 			pos = splitCount * splitCount * 6 - 1;
@@ -458,23 +476,12 @@ public class LCQTMesh : LCGameObject {
 				z++;
 			}
 		}
-		mesh.vertices = verts;
+		for (int i = 0; i < tris.Length; i++) {
+			vertsLowPoly[i] = verts[tris[i]];
+			tris [i] = i;
+		}
+		mesh.vertices = vertsLowPoly;
 		mesh.triangles = tris;
 		mesh.RecalculateNormals ();
-	}
-	public int GetVertsPos(int x,int z)
-	{
-		return _vectorToPosTable [x,z];
-		//return x + z * (rowCount + 1);
-	}
-	public int GetMapPos(int x,int z)
-	{
-		//return _vectorToPosTable [x,z];
-		return x + z * (QTManager.Instance.activePlanet._width);
-	}
-	public override void Destroy ()
-	{
-		base.Destroy ();
-		mesh.Clear ();
 	}
 }

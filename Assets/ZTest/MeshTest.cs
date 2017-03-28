@@ -3,22 +3,19 @@ using System.Collections;
 
 public class MeshTest : MonoBehaviour {
 	public MeshFilter a;
-	public MeshFilter b;
-	public Mesh m;
+	int[] ta;
+	Vector3[] va;
+	Vector3[] na;
 	// Use this for initialization
 	void Start () {
-		
-		m = new Mesh();
-		m.vertices = new Vector3[]{ Vector3.zero,Vector3.zero,Vector3.zero};
-		a.mesh = m;
-		//b.mesh= m;
-		//a.mesh.triangles = new int[]{ 0,1,2};
-		//Debug.Log(a.mesh==b.mesh);
-		Debug.Log(a.mesh==m);
+		ta = a.mesh.triangles;
+		va = a.mesh.vertices;
+		na = a.mesh.normals;
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		
 	}
 }

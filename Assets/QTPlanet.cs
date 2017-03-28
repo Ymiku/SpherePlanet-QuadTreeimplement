@@ -33,6 +33,8 @@ namespace QTPlanetUtility{
 		public int _width;
 		public Texture2D heightTex;
 		public Color[] heightMap;
+		public int[,] vectorToPosTable;
+		public int[,] vectorToHeightMapTable;
 		// Use this for initialization
 		void Awake()
 		{
@@ -41,6 +43,18 @@ namespace QTPlanetUtility{
 		public void Enter()
 		{
 			_width = splitCount * (1<<maxLodLevel)+1;
+			vectorToPosTable = new int[splitCount+1,splitCount+1];
+			for (int x = 0; x <= splitCount; x++) {
+				for (int z = 0; z <= splitCount; z++) {
+					vectorToPosTable[x,z] = x + z * (splitCount + 1);
+				}
+			}
+			vectorToHeightMapTable = new int[_width,_width];
+			for (int x = 0; x < _width; x++) {
+				for (int z = 0; z < _width; z++) {
+					vectorToHeightMapTable[x,z]=x + z * _width;
+				}
+			}
 			map.mapHeight = _width;
 			map.mapWidth = _width;
 			map.GenerateMap ();
