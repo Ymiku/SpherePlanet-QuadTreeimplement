@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 namespace QTPlanetUtility{
-	public class RootNode : QTNode {
+	public sealed class RootNode : QTNode {
 		public Vector3 rootOriPos;
 		public float interval;
 		public RootNode(float length)

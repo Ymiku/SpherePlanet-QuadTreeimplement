@@ -9,7 +9,7 @@ public class PoolManager : UnitySingleton<PoolManager> {
 	public static Dictionary<Type, int> ObjectPoolSizeDic = new Dictionary<Type,int>();
 	public override void Awake(){
 		base.Awake ();
-		RegistPoolableType (typeof(LCQTMesh), 200); 
+		RegistPoolableType (typeof(LCQTMesh), 2000000); 
 	}
 	void Start () {
 		

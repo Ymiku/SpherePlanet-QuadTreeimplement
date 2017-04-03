@@ -2,6 +2,20 @@
 
 public class TextureGenerater : Singleton<TextureGenerater>
 {
+	public float[] GenerateHeightMap(int mapWidth, int mapHeight, float[,] PerlinNosiseMap)
+	{
+		float[] map = new float[mapWidth * mapHeight];
+
+		for (int y = 0; y < mapHeight; y++)
+		{
+			for (int x = 0; x < mapWidth; x++)
+			{
+				map[(mapHeight-y-1)* mapWidth + x] = Mathf.Lerp(0f,1f, PerlinNosiseMap[x, y]);
+			}
+		}
+
+		return map;
+	}
     public Texture2D GenerateGrayscaleTexture(int mapWidth, int mapHeight, float[,] PerlinNosiseMap)
     {
         Texture2D texture = new Texture2D(mapWidth, mapHeight);

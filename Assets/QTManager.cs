@@ -12,6 +12,7 @@ namespace QTPlanetUtility{
 		public float backBuffer = 0.1f;
 		List<QTNode> nodeList;
 		QTNode tNode;
+		Vector3 oldPos = Vector3.zero;
 		// Use this for initialization
 		public void Awake()
 		{
@@ -35,12 +36,15 @@ namespace QTPlanetUtility{
 		// Update is called once per frame
 		public void Update()
 		{
+			if(MathExtra.FastDis(playerTrans.position,oldPos)>=1f)
 			Execute ();
+			oldPos = playerTrans.position;
 		}
 		private void Execute()
 		{
 			for (int i = 0; i < activePlanet.quadList.Count; i++) {
 				activeTerrain = activePlanet.quadList[i];
+				activeTerrain.GetRoot ().ClearNeighbourNode ();
 				activeTerrain.Execute ();
 				activeTerrain.TryGenerateBorder ();
 				activeTerrain.CalculateMesh ();

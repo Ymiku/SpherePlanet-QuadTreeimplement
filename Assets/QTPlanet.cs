@@ -32,7 +32,8 @@ namespace QTPlanetUtility{
 		public PlaneMap map;
 		public int _width;
 		public Texture2D heightTex;
-		public Color[] heightMap;
+		[HideInInspector]
+		public float[] heightMap;
 		public int[,] vectorToPosTable;
 		public int[,] vectorToHeightMapTable;
 		// Use this for initialization
@@ -58,8 +59,7 @@ namespace QTPlanetUtility{
 			map.mapHeight = _width;
 			map.mapWidth = _width;
 			map.GenerateMap ();
-			heightTex = map.GetGrayTex ();
-			heightMap = heightTex.GetPixels ();
+			heightMap = map.GetHeightMap();
 			sphereRange = sphereRadius * 2f;
 			lengthArray = new float[maxLodLevel+1];
 			lengthArray [maxLodLevel] = Mathf.PI * sphereRange*0.25f;

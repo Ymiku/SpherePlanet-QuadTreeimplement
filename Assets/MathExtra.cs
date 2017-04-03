@@ -2,7 +2,61 @@
 using System.Collections;
 
 public static class MathExtra {
-	
+	static float[] sinArray;
+	static float[] cosArray;
+	static MathExtra()
+	{
+		sinArray = new float[360];
+		cosArray = new float[360];
+		for (int i = 0; i < 360; i++) {
+			sinArray [i] = Mathf.Sin (i*Mathf.Deg2Rad);
+			cosArray [i] = Mathf.Cos (i*Mathf.Deg2Rad);
+		}
+	}
+	public static float FastSin(float f)
+	{
+		float deg = f*Mathf.Rad2Deg;
+		while (deg>=360f) {
+			deg -= 360f;
+		}
+		while (deg<0f) {
+			deg += 360f;
+		}
+		int di = (int)deg;
+		return Mathf.Lerp(sinArray [di],sinArray [di+1],deg-di);
+	}
+	public static float FastCos(float f)
+	{
+		float deg = f*Mathf.Rad2Deg;
+		while (deg>=360f) {
+			deg -= 360f;
+		}
+		while (deg<0f) {
+			deg += 360f;
+		}
+		int di = (int)deg;
+		return Mathf.Lerp(cosArray [di],cosArray [di+1],deg-di);
+	}
+	public static float Noise(int x)
+	{
+		x = (x << 13) ^ x;
+		return (1f - ((x * (x * x * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824f);
+	}
+	public static float Noise(int x,int y)
+	{
+		return (Noise(x)+Noise(y))*0.5f;
+	}
+	public static float SmoothNoise_1D(int x)
+	{
+		return Noise(x)*0.5f+Noise(x-1)*0.25f+Noise(x+1)*0.25f;
+	}
+	public static float SmoothNoise_2D(int x,int y)
+	{
+		float corners = (Noise (x - 1, y - 1) + Noise (x + 1, y - 1) + Noise (x - 1, y + 1) + Noise (x + 1, y + 1)) / 16f;
+		float sides = (Noise (x - 1, y) + Noise (x + 1, y) + Noise (x, y - 1) + Noise (x, y + 1)) / 8f;
+		float center = Noise (x, y) / 4f;
+		return corners + sides + center;
+	}
 	public static Vector3 Verlet(Vector3 lxt,Vector3 xt,Vector3 a,float d = 0.2f,float dt = 0.02f)
 	{
 		return xt + d * (xt - lxt) + a * dt*dt;
@@ -24,6 +78,21 @@ public static class MathExtra {
 			return Mathf.Min (ori+speed,target);
 		}
 		return Mathf.Max (ori-speed,target);
+	}
+
+	public static float CosineLerp(float a,float b,float t)
+	{
+		float f = t * 3.1415927f;
+		f = (1f - FastCos (f)) * 0.5f;
+		return a * (1f - f) + b * f;
+	}
+	public static float CubicLerp(float v0,float v1,float v2,float v3,float t)
+	{
+		float P = (v3-v2)-(v0-v1);
+		float Q = (v0 - v1) - P;
+		float R = v2 - v0;
+		float S = v1;
+		return P * Mathf.Pow (t, 3f) + Q * Mathf.Pow (t, 2f) + R * t + S;
 	}
 	public static float GetV2L(Vector2 v)
 	{
@@ -99,7 +168,7 @@ public static class MathExtra {
 	} 
 	public static bool ApproEquals(float x,float y)
 	{
-		if (Mathf.Abs (x - y) <= 0.1f)
+		if (Mathf.Abs (x - y) <= 0.01f)
 			return true;
 		return false;
 	}

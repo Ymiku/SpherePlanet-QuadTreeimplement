@@ -101,7 +101,6 @@ namespace QTPlanetUtility{
 				return;
 			_tempNode = null;
 			for (int i = 0; i < activeNodeListArray.Length; i++) {
-				//Debug.Log ("LOD为"+i.ToString()+"的节点个数为"+activeNodeListArray[i].Count.ToString());
 				for (int m = 0; m < activeNodeListArray[i].Count; m++) {
 					_tempNode = activeNodeListArray [i] [m];
 					if(_tempNode.isDisplay)

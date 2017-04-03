@@ -22,6 +22,7 @@ namespace QTPlanetUtility{
 		}
 		public BorderStatus borderStatus;
 		private QTNode[] _childArray = new QTNode[4];
+		private QTNode[] _neighbourNodes = new QTNode[4];
 		private bool[] _neighbourStatus = new bool[4];
 		bool[] _LastNeighbourStatus = new bool[4];
 		public QTNode()
@@ -84,7 +85,7 @@ namespace QTPlanetUtility{
 			_childArray [2].Init(this,2);
 			_childArray [3].Init(this,3);
 		}
-		private void DestroyChild()
+		public void DestroyChild()
 		{
 			_childArray [0].Destroy ();
 			_childArray [1].Destroy ();
@@ -110,16 +111,23 @@ namespace QTPlanetUtility{
 		public void Show()
 		{
 			isDisplay = true;
-			QTManager.Instance.activeTerrain.AddToUpdateList (this);
 			QTManager.Instance.activeTerrain.activeNodeListArray [lodLevel].Add (this);
+			if (qtMesh == null) {
+				QTManager.Instance.activeTerrain.AddToUpdateList (this);
+			} else {
+				qtMesh.gameObject.SetActive (true);
+			}
 		}
-		private void Hide()
+		private void Hide(bool isDestroy = false)
 		{
 			if (qtMesh == null) {
 				QTManager.Instance.activeTerrain.RemoveFromUpdateList (this);
 			} else {
-				qtMesh.Destroy ();
-				qtMesh = null;
+				qtMesh.gameObject.SetActive (false);
+				if (isDestroy) {
+					qtMesh.Destroy ();
+					qtMesh = null;
+				}
 			}
 			QTManager.Instance.activeTerrain.activeNodeListArray [lodLevel].Remove (this);
 			isDisplay = false;
@@ -128,7 +136,7 @@ namespace QTPlanetUtility{
 		{
 			QTManager.Instance.activeTerrain.allNodeListArray [lodLevel].Remove(this);
 			if (isDisplay) {
-				Hide ();
+				Hide (true);
 			} else {
 				DestroyChild ();
 			}
@@ -198,7 +206,9 @@ namespace QTPlanetUtility{
 				pos = pos - new Vector3 (halfLength+0.1f,0f,0f);
 				break;
 			}
-			QTNode border = FindNearest (QTManager.Instance.activeTerrain.GetRoot(),pos);
+
+			QTNode border = FindNearest (QTManager.Instance.activeTerrain.GetRoot (), pos);
+			_neighbourNodes [dir] = border;
 			if (border.lodLevel > this.lodLevel+1) {
 				border.Generate ();
 			}
@@ -217,6 +227,18 @@ namespace QTPlanetUtility{
 				}
 			}
 
+		}
+		public void ClearNeighbourNode()
+		{
+			_neighbourNodes [0] = null;
+			_neighbourNodes [1] = null;
+			_neighbourNodes [2] = null;
+			_neighbourNodes [3] = null;
+			if (_childArray [0] != null) {
+				for (int i = 0; i < 4; i++) {
+					_childArray [i].ClearNeighbourNode ();
+				}
+			}
 		}
 		public bool[] GetNeighbourStatusArray()
 		{
@@ -262,6 +284,8 @@ namespace QTPlanetUtility{
 				return false;
 			if (dir == 3 && ((borderStatus & BorderStatus.LeftBorder) == BorderStatus.LeftBorder))
 				return false;
+			if (_neighbourNodes [dir] != null) 
+				return _neighbourNodes [dir].lodLevel>this.lodLevel;
 			Vector3 pos = center;
 			float halfLength = length * 0.5f;
 			switch (dir) {
@@ -278,7 +302,7 @@ namespace QTPlanetUtility{
 				pos = pos - new Vector3 (halfLength+0.1f,0f,0f);
 				break;
 			}
-			return FindNearest (QTManager.Instance.activeTerrain.GetRoot(),pos).lodLevel>this.lodLevel;
+			return FindNearest (QTManager.Instance.activeTerrain.GetRoot (), pos).lodLevel>this.lodLevel;
 
 		}
 		private QTNode FindNearest(QTNode root,Vector3 pos)

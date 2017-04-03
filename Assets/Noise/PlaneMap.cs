@@ -45,11 +45,9 @@ public class PlaneMap
             break;
         }
     }
-	public Texture2D GetGrayTex()
+	public float[] GetHeightMap()
 	{
-		Texture2D texture=new Texture2D(mapWidth,mapHeight);
-		texture=TextureGenerater.Instance.GenerateGrayscaleTexture(mapWidth,mapHeight,PerlinNoiseMap);
-		return texture;
+		return TextureGenerater.Instance.GenerateHeightMap(mapWidth,mapHeight,PerlinNoiseMap);
 	}
 	public Texture2D GetColorfulTex()
 	{

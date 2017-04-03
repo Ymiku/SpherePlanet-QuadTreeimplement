@@ -56,7 +56,7 @@ public class LCQTMesh : LCGameObject {
 	}
 	public void CreatMesh(Vector3 center,float length,bool[] transformArray,int splitCount)
 	{
-		Color[] heightMap =  QTManager.Instance.activePlanet.heightMap;
+		float[] heightMap =  QTManager.Instance.activePlanet.heightMap;
 		_vectorToPosTable = QTManager.Instance.activePlanet.vectorToPosTable;
 		_vectorToHeightMapTable = QTManager.Instance.activePlanet.vectorToHeightMapTable;
 		mesh.Clear ();
@@ -87,7 +87,7 @@ public class LCQTMesh : LCGameObject {
 		for (int i = 0; i < max; i++) {
 			verts [i] = MathExtra.FastNormalize (verts [i]) * radius*(1f+heightMap[GetMapPos(
 				(int)((verts [i].x-rootPos.x)/interval),(int)((verts [i].z-rootPos.z)/interval)
-			)].r*0.2f);
+			)]*0.2f);
 		}
 
 
