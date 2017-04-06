@@ -134,6 +134,7 @@ namespace QTPlanetUtility{
 		}
 		public virtual void Destroy()
 		{
+			ClearNeighbourNode ();
 			QTManager.Instance.activeTerrain.allNodeListArray [lodLevel].Remove(this);
 			if (isDisplay) {
 				Hide (true);
@@ -150,7 +151,6 @@ namespace QTPlanetUtility{
 		//Try GenerateBorder
 		public void TryGenerateBorder()
 		{
-			QTNode border;
 			switch (quadrantID) {
 			case 0:
 				if((borderStatus&BorderStatus.UpBorder)!=BorderStatus.UpBorder)

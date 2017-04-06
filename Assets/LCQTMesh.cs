@@ -54,9 +54,18 @@ public class LCQTMesh : LCGameObject {
 		base.Destroy ();
 		mesh.Clear ();
 	}
+	public void CalHeightPos(int i,out float x,out float y)
+	{
+		Vector3 rootPos = QTManager.Instance.activeTerrain.GetRoot ().rootOriPos;
+		float interval = QTManager.Instance.activeTerrain.GetRoot ().interval;
+		x = (int)((verts [i].x - rootPos.x) / interval);
+		y = (int)((verts [i].z - rootPos.z) / interval);
+		x *= QTManager.Instance.activePlanet.mapScale;
+		y *= QTManager.Instance.activePlanet.mapScale;
+	}
 	public void CreatMesh(Vector3 center,float length,bool[] transformArray,int splitCount)
 	{
-		float[] heightMap =  QTManager.Instance.activePlanet.heightMap;
+		float[] heightMap =  QTManager.Instance.activeTerrain.heightMap;
 		_vectorToPosTable = QTManager.Instance.activePlanet.vectorToPosTable;
 		_vectorToHeightMapTable = QTManager.Instance.activePlanet.vectorToHeightMapTable;
 		mesh.Clear ();
@@ -82,12 +91,13 @@ public class LCQTMesh : LCGameObject {
 			}
 		}
 		float radius = QTManager.Instance.activePlanet.sphereRadius;
-		Vector3 rootPos = QTManager.Instance.activeTerrain.GetRoot ().rootOriPos;
-		float interval = QTManager.Instance.activeTerrain.GetRoot ().interval;
+		float hx =0f;
+		float hy=0f;
+		float height;
+
 		for (int i = 0; i < max; i++) {
-			verts [i] = MathExtra.FastNormalize (verts [i]) * radius*(1f+heightMap[GetMapPos(
-				(int)((verts [i].x-rootPos.x)/interval),(int)((verts [i].z-rootPos.z)/interval)
-			)]*0.2f);
+			CalHeightPos (i,out hx,out hy);
+			verts [i] = MathExtra.FastNormalize (verts [i]) * radius*(1f+heightMap[_vectorToHeightMapTable[(int)hx,(int)hy]]*0.2f);
 		}
 
 

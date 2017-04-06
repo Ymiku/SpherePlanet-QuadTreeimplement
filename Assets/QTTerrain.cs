@@ -8,15 +8,15 @@ namespace QTPlanetUtility{
 		public List<QTNode>[] allNodeListArray;
 		public List<QTNode> updateList = new List<QTNode> ();
 		public bool showGizmos = false;
+		public float[] heightMap;
 		private RootNode _rootNode;
 		private QTNode _tempNode;
 		private QTPlanet _planet;
-		public Texture2D grayTex;
 		// Use this for initialization
 		public void Init()
 		{
 			_planet = QTManager.Instance.activePlanet;
-
+			heightMap = _planet.map.GetHeightMap();
 			activeNodeListArray = new List<QTNode>[_planet.maxLodLevel+1];
 			allNodeListArray = new List<QTNode>[_planet.maxLodLevel+1];
 			for (int i = 0; i <= _planet.maxLodLevel; i++) {

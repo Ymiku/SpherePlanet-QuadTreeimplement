@@ -1,16 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+public enum Quad
+{
+	Up = 0,
+	Down = 1,
+	Left = 2,
+	Right = 3,
+	Front = 4,
+	Back = 5
+}
 namespace QTPlanetUtility{
-	public enum Quad
-	{
-		Up = 0,
-		Down = 1,
-		Left = 2,
-		Right = 3,
-		Front = 4,
-		Back = 5
-	}
+	
 	public class QTPlanet : MonoBehaviour {
 		static int Up = 0;
 		static int Down = 1;
@@ -24,16 +25,20 @@ namespace QTPlanetUtility{
 		public int maxLodLevel = 4;
 		public float cl = 1f;
 		public int splitCount = 4;
+		public int peakCount;
 		public Material mat;
 		[HideInInspector]
 		public List<QTTerrain> quadList;
 		[HideInInspector]
 		public float[] lengthArray;
 		public PlaneMap map;
-		public int _width;
+		public int fullLODWidth;
+		public int heightMapWidth;
+		[HideInInspector]
+		public float mapScale;
 		public Texture2D heightTex;
 		[HideInInspector]
-		public float[] heightMap;
+
 		public int[,] vectorToPosTable;
 		public int[,] vectorToHeightMapTable;
 		// Use this for initialization
@@ -43,23 +48,27 @@ namespace QTPlanetUtility{
 		}
 		public void Enter()
 		{
-			_width = splitCount * (1<<maxLodLevel)+1;
+			fullLODWidth = splitCount * (1<<maxLodLevel)+1;
+			peakCount = Mathf.Max (peakCount,1);
+			heightMapWidth = peakCount * (int)Mathf.Pow (map.lacunarity, map.octaves-1);
+
+			mapScale = (float)heightMapWidth/fullLODWidth;
+			map.scale = (float)heightMapWidth/peakCount;
 			vectorToPosTable = new int[splitCount+1,splitCount+1];
 			for (int x = 0; x <= splitCount; x++) {
 				for (int z = 0; z <= splitCount; z++) {
 					vectorToPosTable[x,z] = x + z * (splitCount + 1);
 				}
 			}
-			vectorToHeightMapTable = new int[_width,_width];
-			for (int x = 0; x < _width; x++) {
-				for (int z = 0; z < _width; z++) {
-					vectorToHeightMapTable[x,z]=x + z * _width;
+			vectorToHeightMapTable = new int[heightMapWidth,heightMapWidth];
+			for (int x = 0; x < heightMapWidth; x++) {
+				for (int z = 0; z < heightMapWidth; z++) {
+					vectorToHeightMapTable[x,z]=x + z * heightMapWidth;
 				}
 			}
-			map.mapHeight = _width;
-			map.mapWidth = _width;
+			map.mapHeight = heightMapWidth;
+			map.mapWidth = heightMapWidth;
 			map.GenerateMap ();
-			heightMap = map.GetHeightMap();
 			sphereRange = sphereRadius * 2f;
 			lengthArray = new float[maxLodLevel+1];
 			lengthArray [maxLodLevel] = Mathf.PI * sphereRange*0.25f;
@@ -81,11 +90,17 @@ namespace QTPlanetUtility{
 				quadList.Add (t);
 			}
 			quadList [Up].transform.rotation = Quaternion.Euler (new Vector3 (0f,0f,0f));
+			quadList [Up].gameObject.name = "Up";
 			quadList [Down].transform.rotation = Quaternion.Euler (new Vector3 (-180f,0f,0f));
+			quadList [Down].gameObject.name = "Dwon";
 			quadList [Left].transform.rotation = Quaternion.Euler (new Vector3 (0f,0f,90f));
+			quadList [Left].gameObject.name = "Left";
 			quadList [Right].transform.rotation = Quaternion.Euler (new Vector3 (0f,0f,-90f));
+			quadList [Right].gameObject.name = "Right";
 			quadList [Front].transform.rotation = Quaternion.Euler (new Vector3 (-90f,0f,0f));
+			quadList [Front].gameObject.name = "Front";
 			quadList [Back].transform.rotation = Quaternion.Euler (new Vector3 (90f,0f,0f));
+			quadList [Back].gameObject.name = "Back";
 			for (int i = 0; i < 6; i++) {
 				t = quadList [i];
 				QTManager.Instance.activeTerrain = t;

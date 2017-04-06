@@ -14,8 +14,9 @@ namespace QTPlanetUtility{
 		QTNode tNode;
 		Vector3 oldPos = Vector3.zero;
 		// Use this for initialization
-		public void Awake()
+		public override void Awake()
 		{
+			base.Awake ();
 			Init ();
 		}
 		public void Enter(QTPlanet planet)

@@ -21,7 +21,7 @@ public static class PerlinNoise
                 {
                     float sampleX = x / scale*frequency;
                     float sampleY = y / scale*frequency;
-                    float pointHeight = Mathf.PerlinNoise(sampleX, sampleY)*2-1;
+                    float pointHeight = MathExtra.PerlinNoise(sampleX, sampleY)*2-1;
                     
                     noiseValue+=pointHeight*amplitude;
 

@@ -44,7 +44,26 @@ public static class MathExtra {
 	}
 	public static float Noise(int x,int y)
 	{
-		return (Noise(x)+Noise(y))*0.5f;
+		x ^= x << 13;
+		return Noise (x + y);
+	}
+	public static float v1;
+	public static float v2;
+	public static float v3;
+	public static float v4;
+	public static float i1;
+	public static float i2;
+	public static float PerlinNoise(float x,float y)
+	{
+		int int_x = (int)x;
+		int int_y = (int)y;
+		v1 = Noise (int_x, int_y);
+		v2 = Noise (int_x+1,int_y);
+		v3 = Noise (int_x, int_y+1);
+		v4 = Noise (int_x+1, int_y+1);
+		i1 = CosineLerp (v1,v2,x-int_x);
+		i2 = CosineLerp (v3,v4,x-int_x);
+		return CosineLerp (i1,i2,y-int_y);
 	}
 	public static float SmoothNoise_1D(int x)
 	{

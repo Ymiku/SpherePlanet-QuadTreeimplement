@@ -12,7 +12,7 @@ namespace QTPlanetUtility{
 			this.length = length;
 			this.center = Vector3.up*length*0.5f;
 			this.rootOriPos = center - new Vector3 (length*0.5f,0f,length*0.5f);
-			this.interval = length / (QTManager.Instance.activePlanet._width - 1);
+			this.interval = length / (QTManager.Instance.activePlanet.fullLODWidth - 1);
 			this.sphereCenter = QTManager.Instance.activeTerrain.transform.TransformPoint(MathExtra.FastNormalize(center) * QTManager.Instance.activePlanet.sphereRadius);
 			this.sphereLength = QTManager.Instance.activePlanet.lengthArray[this.lodLevel];
 			borderStatus = BorderStatus.UpBorder | BorderStatus.RightBorder | BorderStatus.DownBorder | BorderStatus.LeftBorder;
