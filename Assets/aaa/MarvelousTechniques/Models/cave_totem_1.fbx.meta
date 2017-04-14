@@ -1,0 +1,148 @@
+fileFormatVersion: 2
+guid: 72f195e05a5a9400687db4267d9f234a
+timeCreated: 1440841732
+licenseType: Store
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: _bool
+    100004: Cave_plate_2
+    100006: cave_plate_2_2
+    100008: cave_stone_1
+    100010: Cube
+    100012: Cube.001
+    100014: Cube.002
+    100016: Cube.004
+    100018: cube_damage_1
+    100020: Dome
+    100022: mushroom
+    100024: plate_3
+    100026: plate_4
+    100028: Sqorus
+    100030: Sun
+    400000: //RootNode
+    400002: _bool
+    400004: Cave_plate_2
+    400006: cave_plate_2_2
+    400008: cave_stone_1
+    400010: Cube
+    400012: Cube.001
+    400014: Cube.002
+    400016: Cube.004
+    400018: cube_damage_1
+    400020: Dome
+    400022: mushroom
+    400024: plate_3
+    400026: plate_4
+    400028: Sqorus
+    400030: Sun
+    2300000: //RootNode
+    2300002: _bool
+    2300004: Cave_plate_2
+    2300006: cave_plate_2_2
+    2300008: cave_stone_1
+    2300010: Cube
+    2300012: Cube.001
+    2300014: Cube.002
+    2300016: Cube.004
+    2300018: cube_damage_1
+    2300020: Dome
+    2300022: mushroom
+    2300024: plate_3
+    2300026: plate_4
+    2300028: Sqorus
+    2300030: Sun
+    3300000: //RootNode
+    3300002: _bool
+    3300004: Cave_plate_2
+    3300006: cave_plate_2_2
+    3300008: cave_stone_1
+    3300010: Cube
+    3300012: Cube.001
+    3300014: Cube.002
+    3300016: Cube.004
+    3300018: cube_damage_1
+    3300020: Dome
+    3300022: mushroom
+    3300024: plate_3
+    3300026: plate_4
+    3300028: Sqorus
+    3300030: Sun
+    4300000: Cube.002
+    4300002: _bool
+    4300004: Sun
+    4300006: Dome
+    4300008: mushroom
+    4300010: cube_damage_1
+    4300012: Sqorus
+    4300014: plate_3
+    4300016: cave_stone_1
+    4300018: Cube.004
+    4300020: Cube.001
+    4300022: Cave_plate_2
+    4300024: Cube
+    4300026: plate_4
+    4300028: cave_plate_2_2
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 0
+    splitTangentsAcrossUV: 1
+    normalImportMode: 1
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

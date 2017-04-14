@@ -195,4 +195,19 @@ public static class MathExtra {
 	{
 		return Mathf.Abs (a.x - b.x) + Mathf.Abs (a.y - b.y) + Mathf.Abs (a.z - b.z);
 	}
+	public static float Max(float a,float b,float c)
+	{
+		a = a > b ? a : b;
+		return a > c ? a : c;
+	}
+	public static float Min(float a,float b,float c)
+	{
+		a = a < b ? a : b;
+		return a < c ? a : c;
+	}
+	public static float Average(float a,float b,float c)
+	{
+		float f = a + b + c;
+		return a * a / f + b * b / f + c * c / f;
+	}
 }

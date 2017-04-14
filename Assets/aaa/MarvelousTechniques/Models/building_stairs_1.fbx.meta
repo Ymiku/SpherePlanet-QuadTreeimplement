@@ -1,0 +1,140 @@
+fileFormatVersion: 2
+guid: 078f288daf6974137a3a4c5000f53a94
+timeCreated: 1439278721
+licenseType: Store
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Circle
+    100004: Cube
+    100006: Icosphere
+    100008: stringer
+    100010: stringer.001
+    100012: stringer.002
+    100014: stringer.003
+    100016: stringer.004
+    100018: stringer.005
+    100020: stringer.006
+    100022: stringer.007
+    100024: stringer.008
+    100026: stringer.009
+    400000: //RootNode
+    400002: Circle
+    400004: Cube
+    400006: Icosphere
+    400008: stringer
+    400010: stringer.001
+    400012: stringer.002
+    400014: stringer.003
+    400016: stringer.004
+    400018: stringer.005
+    400020: stringer.006
+    400022: stringer.007
+    400024: stringer.008
+    400026: stringer.009
+    2300000: Circle
+    2300002: Cube
+    2300004: Icosphere
+    2300006: stringer
+    2300008: stringer.001
+    2300010: stringer.002
+    2300012: stringer.003
+    2300014: stringer.004
+    2300016: stringer.005
+    2300018: stringer.006
+    2300020: stringer.007
+    2300022: stringer.008
+    2300024: stringer.009
+    2300026: //RootNode
+    3300000: Circle
+    3300002: Cube
+    3300004: Icosphere
+    3300006: stringer
+    3300008: stringer.001
+    3300010: stringer.002
+    3300012: stringer.003
+    3300014: stringer.004
+    3300016: stringer.005
+    3300018: stringer.006
+    3300020: stringer.007
+    3300022: stringer.008
+    3300024: stringer.009
+    3300026: //RootNode
+    4300000: stringer.009
+    4300002: stringer.008
+    4300004: stringer.007
+    4300006: stringer.006
+    4300008: stringer.005
+    4300010: stringer.004
+    4300012: stringer.003
+    4300014: stringer.002
+    4300016: stringer.001
+    4300018: stringer
+    4300020: Circle
+    4300022: Cube
+    4300024: Icosphere
+    4300026: Stair.000_Stair.002
+    4300028: stairs
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

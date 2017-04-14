@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
 namespace QTPlanetUtility{
 	public class QTManager : UnitySingleton<QTManager> {
 		public Transform playerTrans;
@@ -13,6 +14,8 @@ namespace QTPlanetUtility{
 		List<QTNode> nodeList;
 		QTNode tNode;
 		Vector3 oldPos = Vector3.zero;
+		public Vector3 playerPos;
+		public Vector3 localPlayerPos;
 		// Use this for initialization
 		public override void Awake()
 		{
@@ -37,7 +40,8 @@ namespace QTPlanetUtility{
 		// Update is called once per frame
 		public void Update()
 		{
-			if(MathExtra.FastDis(playerTrans.position,oldPos)>=1f)
+			playerPos = playerTrans.position;//MathExtra.FastNormalize (playerTrans.position) * activePlanet.sphereRadius;
+			//if(MathExtra.FastDis(playerTrans.position,oldPos)>=1f)
 			Execute ();
 			oldPos = playerTrans.position;
 		}
@@ -45,7 +49,6 @@ namespace QTPlanetUtility{
 		{
 			for (int i = 0; i < activePlanet.quadList.Count; i++) {
 				activeTerrain = activePlanet.quadList[i];
-				activeTerrain.GetRoot ().ClearNeighbourNode ();
 				activeTerrain.Execute ();
 				activeTerrain.TryGenerateBorder ();
 				activeTerrain.CalculateMesh ();
@@ -59,11 +62,13 @@ namespace QTPlanetUtility{
 		}
 		public bool CanGenerate(QTNode node)
 		{
-			return MathExtra.GetV3L (QTManager.Instance.playerTrans.position - node.sphereCenter)*GetDisPower() / node.sphereLength < QTManager.Instance.activePlanet.cl;
+			return (MathExtra.GetV3L (playerPos - node.sphereCenter) * GetDisPower () / node.sphereLength < QTManager.Instance.activePlanet.cl);
+				//||(MathExtra.GetV3L (QTManager.Instance.playerTrans.position - node.terrainCenter)*GetDisPower() / node.sphereLength < QTManager.Instance.activePlanet.cl);
 		}
 		public bool NeedBack(QTNode node)
 		{
-			return MathExtra.GetV3L (QTManager.Instance.playerTrans.position - node.sphereCenter)*GetDisPower() / node.sphereLength >= (QTManager.Instance.activePlanet.cl+backBuffer);
+			return (MathExtra.GetV3L (playerPos - node.sphereCenter)*GetDisPower() / node.sphereLength >= (QTManager.Instance.activePlanet.cl+backBuffer));
+				//&&(MathExtra.GetV3L (QTManager.Instance.playerTrans.position - node.terrainCenter)*GetDisPower() / node.sphereLength >= (QTManager.Instance.activePlanet.cl+backBuffer));
 		}
 	}
 }

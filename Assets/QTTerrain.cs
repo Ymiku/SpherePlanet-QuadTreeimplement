@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 namespace QTPlanetUtility{
 	public class QTTerrain : MonoBehaviour {
-
 		public List<QTNode>[] activeNodeListArray;
 		public List<QTNode>[] allNodeListArray;
 		public List<QTNode> updateList = new List<QTNode> ();
@@ -13,9 +12,10 @@ namespace QTPlanetUtility{
 		private QTNode _tempNode;
 		private QTPlanet _planet;
 		// Use this for initialization
-		public void Init()
+		public void Init(Quad q)
 		{
 			_planet = QTManager.Instance.activePlanet;
+			_planet.map.GenerateMap (QTManager.Instance.activePlanet.seed+(int)q);
 			heightMap = _planet.map.GetHeightMap();
 			activeNodeListArray = new List<QTNode>[_planet.maxLodLevel+1];
 			allNodeListArray = new List<QTNode>[_planet.maxLodLevel+1];
@@ -23,7 +23,7 @@ namespace QTPlanetUtility{
 				activeNodeListArray [i] = new List<QTNode> ();
 				allNodeListArray [i] = new List<QTNode> ();
 			}
-			_rootNode = new RootNode (_planet.sphereRange);
+			_rootNode = new RootNode (_planet.sphereDiameter);
 			TryGenerateBorder ();
 			CalculateMesh ();
 		}
@@ -81,7 +81,7 @@ namespace QTPlanetUtility{
 				_tempNode.qtMesh.transform.localRotation = Quaternion.Euler (new Vector3(0f,0f,0f));
 				_tempNode.qtMesh.meshRenderer.material = _planet.mat;
 
-				_tempNode.qtMesh.CreatMesh (_tempNode.center,_tempNode.length,_tempNode.GetNeighbourStatusArray (),_planet.splitCount);
+				_tempNode.qtMesh.CreatMesh (_tempNode,_tempNode.GetNeighbourStatusArray (),_planet.splitCount);
 				//node.qtMesh.CreatMesh (node.center,node.length,new bool[]{false,false,false,false},splitCount);
 				_tempNode.qtMesh.gameObject.SetActive (true);
 			}

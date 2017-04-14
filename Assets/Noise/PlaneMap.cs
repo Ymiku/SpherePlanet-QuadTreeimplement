@@ -1,76 +1,53 @@
 ﻿using UnityEngine;
-[System.Serializable]
-public class PlaneMap
-{
-    public TextureType textureType=TextureType.Grayscale;
-    
-    public int mapWidth;
-    
-    public int mapHeight;
-    
-    public float scale;
-    
-    public int octaves;
-    
-    public float persistance;
-    
-    public float lacunarity;
-    
-    public Renderer planeRenderer;
-    
-    public TerrainType [] terrainType;
-	float [,] PerlinNoiseMap;
-    public void GenerateMap()
-    {
-        PerlinNoiseMap=PerlinNoise.GetPerlinNoiseMapArray(mapWidth,mapHeight,scale,octaves,persistance,lacunarity);
-		return;
-        Texture2D texture=new Texture2D(mapWidth,mapHeight);
-        
-        switch (textureType)
-        {
-            case TextureType.Grayscale:
-            texture=TextureGenerater.Instance.GenerateGrayscaleTexture(mapWidth,mapHeight,PerlinNoiseMap);
-            
-            planeRenderer.sharedMaterial.mainTexture=texture;
-            planeRenderer.transform.localScale=new Vector3(mapWidth,1,mapHeight);
-            
-            break;
-            
-            case TextureType.colorful:
-            texture=TextureGenerater.Instance.GenerateColorfulTexture(mapWidth,mapHeight,PerlinNoiseMap,terrainType);
-            
-            planeRenderer.sharedMaterial.mainTexture=texture;
-            planeRenderer.transform.localScale=new Vector3(mapWidth,1,mapHeight);
-            
-            break;
-        }
-    }
-	public float[] GetHeightMap()
+using QTPlanetUtility;
+namespace QTPlanetUtility{
+	[System.Serializable]
+	public class PlaneMap
 	{
-		return TextureGenerater.Instance.GenerateHeightMap(mapWidth,mapHeight,PerlinNoiseMap);
+	    [HideInInspector]
+	    public int mapWidth;
+		[HideInInspector]
+	    public int mapHeight;
+		[HideInInspector]
+	    public float scale;
+	    
+	    public int octaves;
+	    
+	    public float persistance;
+	    
+	    public float lacunarity;
+	    
+	    public TerrainType [] terrainType;
+		float [,] PerlinNoiseMap;
+		public void GenerateMap(int seed)
+	    {
+	        PerlinNoiseMap=PerlinNoise.GetPerlinNoiseMapArray(mapWidth,mapHeight,scale,octaves,persistance,lacunarity,seed);
+			return;
+	    }
+		public float[] GetHeightMap()
+		{
+			float[] map = new float[mapWidth * mapHeight];
+
+			for (int y = 0; y < mapHeight; y++)
+			{
+				for (int x = 0; x < mapWidth; x++)
+				{
+					map[(mapHeight-y-1)* mapWidth + x] = Mathf.Lerp(0f,1f, PerlinNoiseMap[x, y]);
+				}
+			}
+			return map;
+		}
 	}
-	public Texture2D GetColorfulTex()
+		
+
+	[System.SerializableAttribute]
+	public struct TerrainType
 	{
-		Texture2D texture=new Texture2D(mapWidth,mapHeight);
-		texture=TextureGenerater.Instance.GenerateColorfulTexture(mapWidth,mapHeight,PerlinNoiseMap,terrainType);
-		return texture;
+	     public string name;
+	     
+	     public Color color;
+	     
+	     public float height;
 	}
+
 }
-
-public enum TextureType
-{
-    Grayscale=0,
-    colorful=1,
-}
-
-[System.SerializableAttribute]
-public struct TerrainType
-{
-     public string name;
-     
-     public Color color;
-     
-     public float height;
-}
-
-

@@ -30,7 +30,20 @@ public static class NormalSolver
 	///     the same vertex will be smooth regardless of the angle! 
 	/// </param>
 	public static void RecalculateHardNormals(this Mesh mesh) {
+		var vertices = mesh.vertices;
+		Vector3 p1;
+		Vector3 p2;
+		Vector3[] normals = new Vector3[vertices.Length];
+		for (var i = 0; i < vertices.Length; i += 3) {
+			// Calculate the normal of the triangle
+			p1 = vertices[i+1] - vertices[i];
+			p2 = vertices[i+2] - vertices[i];
+			normals[i] = normals[i+1] = normals[i+2] = MathExtra.FastNormalize(Vector3.Cross(p1, p2));
+		}
 
+		// Each entry in the dictionary represents a unique vertex position.
+
+		mesh.normals = normals;
 	}
 	public static void RecalculateNormals(this Mesh mesh, float angle) {
 		var cosineThreshold = Mathf.Cos(angle * Mathf.Deg2Rad);

@@ -22,23 +22,27 @@ namespace QTPlanetUtility{
 		}
 		public BorderStatus borderStatus;
 		private QTNode[] _childArray = new QTNode[4];
-		private QTNode[] _neighbourNodes = new QTNode[4];
 		private bool[] _neighbourStatus = new bool[4];
 		bool[] _LastNeighbourStatus = new bool[4];
+		public Vector2 fullGenerateOrigin;
+		public int fullGenerateWidth;
+		public int fullGenerateOffset;
 		public QTNode()
 		{
 		}
 		public void Init(QTNode parent,int quadrantID)
 		{
+			QTTerrain activeTerrain = QTManager.Instance.activeTerrain;
+			QTPlanet activePlanet = QTManager.Instance.activePlanet;
 			this.parent = parent;
-			this.lodLevel = parent.lodLevel - 1;
+			lodLevel = parent.lodLevel - 1;
 			this.quadrantID = quadrantID;
-			this.length = parent.length * 0.5f;
-			float offSet = this.length*0.5f;
-			this.center = new Vector3 (parent.center.x + ((quadrantID == 0 || quadrantID == 3) ? offSet : -offSet),parent.center.y, 
+			length = parent.length * 0.5f;
+			float offSet = length*0.5f;
+			center = new Vector3 (parent.center.x + ((quadrantID == 0 || quadrantID == 3) ? offSet : -offSet),parent.center.y, 
 				parent.center.z + ((quadrantID == 0 || quadrantID == 1) ? offSet : -offSet));
-			this.sphereCenter = QTManager.Instance.activeTerrain.transform.TransformPoint(MathExtra.FastNormalize(center) * QTManager.Instance.activePlanet.sphereRadius);
-			this.sphereLength = QTManager.Instance.activePlanet.lengthArray[this.lodLevel];
+			sphereCenter = MathExtra.FastNormalize(center) * activePlanet.sphereRadius;
+			sphereLength = activePlanet.lengthArray[this.lodLevel];
 			if(parent.borderStatus!=BorderStatus.NotBorder)
 			{
 				if(((parent.borderStatus&BorderStatus.UpBorder)==BorderStatus.UpBorder)&&(quadrantID==0||quadrantID==1))
@@ -50,7 +54,28 @@ namespace QTPlanetUtility{
 				if(((parent.borderStatus&BorderStatus.LeftBorder)==BorderStatus.LeftBorder)&&(quadrantID==1||quadrantID==2))
 					borderStatus &= BorderStatus.LeftBorder;
 			}
-			QTManager.Instance.activeTerrain.allNodeListArray [lodLevel].Add (this);
+			fullGenerateWidth = ((parent.fullGenerateWidth - 1)>>1) + 1;
+			fullGenerateOffset = fullGenerateWidth - 1;
+			switch (quadrantID) {
+			case 0:
+				fullGenerateOrigin = parent.fullGenerateOrigin+new Vector2(fullGenerateOffset,fullGenerateOffset);
+				break;
+			case 1:
+				fullGenerateOrigin = parent.fullGenerateOrigin+new Vector2(0,fullGenerateOffset);
+				break;
+			case 2:
+				fullGenerateOrigin = parent.fullGenerateOrigin;
+				break;
+			case 3:
+				fullGenerateOrigin = parent.fullGenerateOrigin+new Vector2(this.fullGenerateOffset,0);
+				break;
+			}
+			//terrainCenter = sphereCenter*(1f+activeTerrain.heightMap[activePlanet.vectorToHeightMapTable[         (int)((fullGenerateOrigin.x+(int)(fullGenerateOffset/2f))*activePlanet.mapScale),
+			//	(int)((fullGenerateOrigin.y+(int)(fullGenerateOffset/2f))*activePlanet.mapScale)    ]]*activePlanet.heightScale);
+			//terrainCenter = activeTerrain.transform.TransformPoint(terrainCenter);
+			sphereCenter = activeTerrain.transform.TransformPoint(sphereCenter);
+			fullGenerateOffset /= activePlanet.splitCount;
+			activeTerrain.allNodeListArray [lodLevel].Add (this);
 			CheckForLOD ();
 		}
 		public static Stack<QTNode> nodePool = new Stack<QTNode>();
@@ -134,7 +159,6 @@ namespace QTPlanetUtility{
 		}
 		public virtual void Destroy()
 		{
-			ClearNeighbourNode ();
 			QTManager.Instance.activeTerrain.allNodeListArray [lodLevel].Remove(this);
 			if (isDisplay) {
 				Hide (true);
@@ -208,7 +232,6 @@ namespace QTPlanetUtility{
 			}
 
 			QTNode border = FindNearest (QTManager.Instance.activeTerrain.GetRoot (), pos);
-			_neighbourNodes [dir] = border;
 			if (border.lodLevel > this.lodLevel+1) {
 				border.Generate ();
 			}
@@ -221,25 +244,14 @@ namespace QTPlanetUtility{
 			//	return;
 			GetNeighbourStatusArray();
 			if ( (_neighbourStatus[0] != _LastNeighbourStatus[0])||(_neighbourStatus[1] != _LastNeighbourStatus[1])||(_neighbourStatus[2] != _LastNeighbourStatus[2])||(_neighbourStatus[3] != _LastNeighbourStatus[3])) {
-				qtMesh.CreatMesh (center, length, _neighbourStatus, QTManager.Instance.activePlanet.splitCount);
+				qtMesh.CreatMesh (this, _neighbourStatus, QTManager.Instance.activePlanet.splitCount);
 				for (int i = 0; i < 4; i++) {
 					_LastNeighbourStatus [i] = _neighbourStatus [i];
 				}
 			}
 
 		}
-		public void ClearNeighbourNode()
-		{
-			_neighbourNodes [0] = null;
-			_neighbourNodes [1] = null;
-			_neighbourNodes [2] = null;
-			_neighbourNodes [3] = null;
-			if (_childArray [0] != null) {
-				for (int i = 0; i < 4; i++) {
-					_childArray [i].ClearNeighbourNode ();
-				}
-			}
-		}
+
 		public bool[] GetNeighbourStatusArray()
 		{
 			switch (quadrantID) {
@@ -284,8 +296,6 @@ namespace QTPlanetUtility{
 				return false;
 			if (dir == 3 && ((borderStatus & BorderStatus.LeftBorder) == BorderStatus.LeftBorder))
 				return false;
-			if (_neighbourNodes [dir] != null) 
-				return _neighbourNodes [dir].lodLevel>this.lodLevel;
 			Vector3 pos = center;
 			float halfLength = length * 0.5f;
 			switch (dir) {
