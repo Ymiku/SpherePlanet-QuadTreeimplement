@@ -59,12 +59,12 @@ public class LCQTMesh : LCGameObject {
 	}
 	public float GetSmoothHeight(float x,float y)
 	{
+		//return heightMap[_vectorToHeightMapTable[(int)x,(int)y]];
 		int width = QTManager.Instance.activePlanet.heightMapWidth;
 		int int_x = (int)x;
 		int int_y = (int)y;
 		float c1;
 		float c2;
-		//return heightMap[_vectorToHeightMapTable[int_x,int_y]];
 		if (int_x >= width-1) {
 			if (int_y >= width-1) {
 				return heightMap[_vectorToHeightMapTable[int_x,int_y]];
@@ -82,6 +82,7 @@ public class LCQTMesh : LCGameObject {
 	}
 	public void CreatMesh(QTNode node,bool[] transformArray,int splitCount)
 	{
+		if(node.lodLevel==0)
 		gameObject.SetActive (false);
 		heightMap =  QTManager.Instance.activeTerrain.heightMap;
 		_vectorToPosTable = QTManager.Instance.activePlanet.vectorToPosTable;
@@ -118,7 +119,11 @@ public class LCQTMesh : LCGameObject {
 		float heightScale = QTManager.Instance.activePlanet.heightScale;
 		for (int i = 0; i < max; i++) {
 			hx = origin.x + offSet * lineCount;
-			height [i] = GetSmoothHeight (hx, hy);
+			if (QTManager.Instance.activePlanet.mapScale == 1f) {
+				height [i] = heightMap[_vectorToHeightMapTable[(int)hx,(int)hy]];
+			} else {
+				height [i] = GetSmoothHeight (hx, hy);
+			}
 			verts [i] = MathExtra.FastNormalize (verts [i]) * radius*(1f+height[i]*heightScale);
 			lineCount++;
 			if (lineCount>=splitCount+1)
@@ -523,12 +528,12 @@ public class LCQTMesh : LCGameObject {
 			vertsLowPoly[i] = verts[tris[i]];
 			if (lineCount == 0) {
 				heightTemp = MathExtra.Min(height[tris[i]],height[tris[i+1]],height[tris[i+2]]);
-				if (heightTemp >= 0.5f) {
+				if (heightTemp >= 0.6f) {
 					uv [i] = uv [i + 1] = uv [i + 2] = new Vector2 (0f, 0f);
-				} else if (heightTemp >= 0.7f) {
-					uv [i] = uv [i + 1] = uv [i + 2] = new Vector2 (0.5f, 0f);
+				} else if (heightTemp >= 0.3f) {
+					uv [i] = uv [i + 1] = uv [i + 2] = new Vector2 (0.2f, 0.14f);
 				} else {
-					uv [i] = uv [i + 1] = uv [i + 2] = new Vector2 (0.8f, 0f);
+					uv [i] = uv [i + 1] = uv [i + 2] = new Vector2 (0.2f, 0.25f);
 				}
 				lineCount = 3;
 			}
@@ -549,6 +554,11 @@ public class LCQTMesh : LCGameObject {
 		mesh.triangles = tris;
 		mesh.normals = normals;
 		mesh.uv = uv;
+		if (node.lodLevel == 0) {
+			meshCollider.enabled = true;
+		} else {
+			meshCollider.enabled = false;
+		}
 		gameObject.SetActive (true);
 	}
 }
