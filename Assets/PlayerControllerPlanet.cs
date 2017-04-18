@@ -19,7 +19,6 @@ public class PlayerControllerPlanet : MonoBehaviour {
 	public float maxVelocityChange = 10.0f;
 	public bool canJump = true;
 	public float jumpHeight = 2.0f;
-	bool grounded = false;
 	Rigidbody rb;
 	Transform cameraTransform;
 
@@ -48,10 +47,6 @@ public class PlayerControllerPlanet : MonoBehaviour {
 		if (Input.GetButtonDown("Jump"))
 			rb.AddForce(transform.up * jumpForce);
 
-		Ray ray = new Ray(transform.position, -transform.up);
-		RaycastHit hit;
-
-		grounded = Physics.Raycast(ray, out hit, 1 + .1f);
 	}
 
 	void FixedUpdate()
